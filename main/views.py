@@ -16,12 +16,19 @@ def home(request):
 @csrf_exempt
 def add_todo(request):
     current_date = timezone.now()
+    todo_items = Todo.objects.all()
+    print(todo_items)
+    task_list = []
+    for i in todo_items:
+        task_list.append(i.text)
     content = request.POST["content"]
-    created_obj = Todo.objects.create(added_date=current_date, text=content)
+    if content not in task_list:
+        created_obj = Todo.objects.create(added_date=current_date, text=content)
     return HttpResponseRedirect("/main/")
 
 
 @csrf_exempt
 def delete_todo(request, todo_id):
-    Todo.objects.get(id=todo_id).delete()
+    content = Todo.objects.get(id=todo_id)
+    content.delete()
     return HttpResponseRedirect("/main/")
